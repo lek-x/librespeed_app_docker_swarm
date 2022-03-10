@@ -2,15 +2,15 @@
 
 ## Disclaimer
 
-This project is my mini diploma project on Docker course, inside in it **old version** of LibreSpeed application.
+This project is my mini diploma project on Docker course, inside in it the **old version** of LibreSpeed application.
 
 ## Description
 
-This code deploy **LibreSpeed php app** with **php-fpm** and **NGINX fastcgi**, **MYSQL DB**, also it deploys **fluentd**, **EFK**, **Caddy** as revers proxy.
+This code deploys the **LibreSpeed php app** with  **php-fpm** and  **NGINX fastcgi**, **MYSQL DB**,  also it deploys **fluentd**, **EFK**, **Caddy** as reverse proxy.
 
-You may replace docker file with new app from [github](https://github.com/librespeed/speedtest) or build your own Dockerfile.
+You may replace the Docker file with a new app from [github](https://github.com/librespeed/speedtest) or build your own Dockerfile.
 
-- PHP app build from based on php:7.4-fpm + nginx fastcgi
+- PHP app based on php:7.4-fpm + nginx fastcgi
 - Fluentd based on fluent/fluentd:v1.14-debian-1
 - EFK stack has version 7.14.0
 
@@ -38,10 +38,10 @@ You may replace docker file with new app from [github](https://github.com/libres
 docker build . -t ${image_name}
 ```
 
-4. Push your images to  your repo 
+4. Push your images to your repo 
 
 
-5. Edit images url in compose file (**rbmdkrfinalapp/app.compose.yml**) accordind to your repo (only for **app** and **fluentd** service)
+5. Edit images url in compose file (**rbmdkrfinalapp/app.compose.yml**) according to your repo (only for **app** and **fluentd** service)
 
 ### Deploy Stacks
 1. Init Docker Swarm mode and add nodes
