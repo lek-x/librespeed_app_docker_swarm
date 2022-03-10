@@ -6,24 +6,24 @@ This project is my mini diploma project on Docker course, inside it **old versio
 
 ## Description
 
-This code deploy **LibreSpeed php application*** with **php-fpm** and **nginx fastcgi**, **mysql DB**,  inside in app container, also it deploys **fluentd**, **EFK**, **Caddy** as revers proxy.
+This code deploy **LibreSpeed php app** with **php-fpm** and **NGINX fastcgi**, **MYSQL DB**, also it deploys **fluentd**, **EFK**, **Caddy** as revers proxy.
 
 You may replace docker file with new app from [github](https://github.com/librespeed/speedtest) or build your own Dockerfile.
 
-PHP app build from based on php:7.4-fpm + nginx fastcgi
-Fluentd based on fluent/fluentd:v1.14-debian-1
-EFK stack has version 7.14.0
+-PHP app build from based on php:7.4-fpm + nginx fastcgi
+-Fluentd based on fluent/fluentd:v1.14-debian-1
+-EFK stack has version 7.14.0
 
 ## Foler structure
 
-**build** - contains app directory and fluentd with Dockerfiles to build images
+**build/** - contains app directory and fluentd with Dockerfiles to build images
 
-**rbmdkrfinalapp** - contains  conf directory and compose file for deploying app and mysql.
-**rbmdkrfinalefk** - contains  conf directory and compose file for deploying EFK+proxy.
+**rbmdkrfinalapp/** - contains  conf directory and compose file for deploying app and mysql.
+**rbmdkrfinalefk/** - contains  conf directory and compose file for deploying EFK+proxy.
 
 
 
-## Requrements to build 
+## Requirements  to build 
   - Ubuntu OS 21.10 (tested)
   - Docker 20.10.12 (tested)
   - Docker compose v2.2.3 (tested)
@@ -33,7 +33,7 @@ EFK stack has version 7.14.0
 ### Build images
 1. Clone repo
 2. Change dir to build/app or build/fluentd
-3. Build images by command
+3. Build images with command
 ```
 docker build . -t ${image_name}
 ```
@@ -41,14 +41,14 @@ docker build . -t ${image_name}
 4. Push your images to  your repo 
 
 
-5. Edit image urls in compose file (rbmdkrfinalapp/app.compose.yml) accordind to your repo (only for app and fluentd service)
+5. Edit images url in compose file (**rbmdkrfinalapp/app.compose.yml**) accordind to your repo (only for **app** and **fluentd** service)
 
 ### Deploy Stacks
-1. Init docker swarm mode and add nodes
+1. Init Docker Swarm mode and add nodes
 ```
 docker swarm init 
 ```
-2. Set up your MYSQL_PASSWORD,DB_PASSWORD, PASSWORD in rbmdkrfinalapp/app.compose.yml  for DB,APP, and APP statistic.
+2. Set up your MYSQL_PASSWORD,DB_PASSWORD, PASSWORD in **rbmdkrfinalapp/app.compose.yml**  for DB,APP, and APP statistic fields.
 
 2. Change dir to root of repo.  Run **up.sh**. It creates two networks **app** and **pub**
 ```
