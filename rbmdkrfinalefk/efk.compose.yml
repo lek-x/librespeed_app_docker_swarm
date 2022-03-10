@@ -1,0 +1,96 @@
+version: "3.9"
+
+configs:
+  caddy_conf: 
+    file: conf/caddyfile.conf
+
+services:
+  fluentd:
+    image: your_registry_address
+    ports:
+      - 24224:24224
+      - 24224:24224/udp
+    networks:
+      - app 
+    deploy:
+      mode: global
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"
+  elasticsearch:
+    image: elasticsearch:7.14.0
+    ports:
+      - "9200:9200"  
+    environment:
+      ES_JAVA_OPTS: "-Des.index.max_number_of_shards=1"
+      ES_JAVA_OPTS: "-Des.index.number_of_replicas=0"
+      ES_JAVA_OPTS: "-Xms512m -Xmx512m"
+      discovery.type: single-node
+      bootstrap.memory_lock: "true"
+      node.name: "elasticsearch"
+      network.host: "0.0.0.0"
+      http.port: "9200"
+      discovery.seed_hosts: 127.0.0.1, [::1]
+      xpack.security.enabled: "false"
+    ports:
+      - 9200:9200
+    networks:
+      - app
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: localhost:24224
+        fluentd-async-connect: 'true'
+        tag: elasticsearch
+    deploy:     
+  kibana:
+    image: kibana:7.14.0
+    environment:
+      SERVER_NAME: kibana
+      ELASTICSEARCH_HOSTS:  http://elasticsearch:9200
+    ports:
+      - 5601:5601
+    networks:
+      - app
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: localhost:24224
+        fluentd-async-connect: 'true'
+        tag: kibana 
+    depends_on:
+      - fluentd
+    deploy:
+      resources:
+        limits:
+          memory: 512m    
+  caddy:
+    image: caddy:2-alpine
+    ports:
+      - "8080:80"
+    configs:
+      - source: caddy_conf
+        target: /etc/caddy/Caddyfile
+    networks:
+      - app
+      - pub
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: localhost:24224
+        fluentd-async-connect: 'true'
+        tag: caddy
+    depends_on:
+      - fluentd
+    deploy:
+      placement:
+        constraints:
+         - node.role == manager         
+        
+networks:
+  app:
+    external: true
+  pub: 
+    external: true   

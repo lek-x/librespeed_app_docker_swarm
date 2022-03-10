@@ -1,0 +1,79 @@
+version: "3.9"
+
+configs:
+  php1:
+    file: conf/servers.json
+  nginx:
+    file: conf/default
+services:
+  php-fpm:
+    image: your_registry_address
+    environment:
+      - TITLE=LibreSpeedRebrainme
+      - MODE=standalone
+      - PASSWORD=YOUR_PASSWORD_statistic
+      - TELEMETRY=true
+      - ENABLE_ID_OBFUSCATION=true
+      - REDACT_IP_ADDRESSES=false
+      - DB_USERNAME=speedtst
+      - DB_PASSWORD=YOUR_PASSWORD
+      - DB_HOSTNAME=mysql
+      - DB_NAME=speedtest_telemetry
+      - DB_TYPE=mysql
+      - DB_PORT=3306
+    networks:
+      - app
+    ports:
+      - "88:80"
+    configs:
+      - source: php1
+        target: /servers.json
+      - source: nginx
+        target: /etc/nginx/sites-available/default
+    restart: unless-stopped
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: localhost:24224
+        fluentd-async-connect: 'true'
+        tag: app
+    depends_on:
+      - mysql
+    deploy:
+      mode: replicated
+      replicas: 1  
+          
+  mysql:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    volumes:
+      - type: volume
+        source: db
+        target: /var/lib/mysql
+      - type: bind
+        source: conf/db
+        target: /docker-entrypoint-initdb.d     
+    environment:
+      MYSQL_ROOT_PASSWORD: rootrbr  
+      MYSQL_DATABASE: speedtest_telemetry
+      MYSQL_USER: speedtst
+      MYSQL_PASSWORD: YOUR_PASSWORD
+    networks:
+      - app
+    ports:
+      - "3306:3306"    
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: localhost:24224
+        fluentd-async-connect: 'true'
+        tag: mysql.db
+    deploy:
+      mode: replicated
+      replicas: 1    
+
+volumes:
+  db:
+networks:
+  app:
+    external: true
