@@ -10,9 +10,9 @@ This code deploy **LibreSpeed php app** with **php-fpm** and **NGINX fastcgi**, 
 
 You may replace docker file with new app from [github](https://github.com/librespeed/speedtest) or build your own Dockerfile.
 
--PHP app build from based on php:7.4-fpm + nginx fastcgi
--Fluentd based on fluent/fluentd:v1.14-debian-1
--EFK stack has version 7.14.0
+- PHP app build from based on php:7.4-fpm + nginx fastcgi
+- Fluentd based on fluent/fluentd:v1.14-debian-1
+- EFK stack has version 7.14.0
 
 ## Foler structure
 
@@ -64,6 +64,10 @@ docker swarm init
 3. Kibana http://your_ip:5601
 4. MYSQL DB your_ip:3306
 
+
+### Known bugs/limitations
+
+As app works in Docker Swarm clients IPs shows as IP of Docker Swarm, If you know how to fix it, please notify me.
 
 
 
