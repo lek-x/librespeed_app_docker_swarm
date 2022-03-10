@@ -2,7 +2,7 @@
 
 ## Disclaimer
 
-This project is my mini diploma project on Docker course, inside it **old version** of LibreSpeed apllication.
+This project is my mini diploma project on Docker course, inside in it **old version** of LibreSpeed application.
 
 ## Description
 
